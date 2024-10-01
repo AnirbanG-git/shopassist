@@ -22,7 +22,7 @@ ShopAssist is an intelligent chatbot developed to assist users in finding the be
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/shopassist.git
+   git clone https://github.com/AnirbanG-git/shopassist.git
    cd shopassist
    ```
 
