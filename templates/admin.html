@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Generating CSV</title>
+    <style>
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loader-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height to center vertically */
+        }
+
+        h1 {
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Initially, the loader and text will be centered and displayed in the middle */
+        #status-message {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader-container">
+        <!-- Indefinite progress spinner -->
+        <div class="loader" id="loader"></div>
+        <!-- Status message displayed in the middle of the screen -->
+        <h1 id="status-message">Data generation started. Generating updated_laptop.csv...</h1>
+    </div>
+
+    <script>
+        // Polling the server for status
+        function checkStatus() {
+            fetch("/check_status")
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "In Progress") {
+                    setTimeout(checkStatus, 1000);  // Keep polling every second
+                } else if (data.status === "Completed") {
+                    document.getElementById("loader").style.display = "none";  // Hide the loader
+                    document.getElementById("status-message").innerText = "Data generation completed! updated_laptop.csv generated successfully!";
+                } else if (data.status.startsWith("Error")) {
+                    document.getElementById("status-message").innerText = "Error occurred: " + data.status;
+                    document.getElementById("loader").style.display = "none";  // Hide the loader on error
+                }
+            });
+        }
+
+        // Start the CSV generation and begin polling
+        function startGeneration() {
+            fetch("/start_generation", {method: "POST"})
+            .then(() => {
+                checkStatus();  // Start polling
+            });
+        }
+
+        // Initiate the generation process on page load
+        window.onload = startGeneration;
+    </script>
+</body>
+</html>

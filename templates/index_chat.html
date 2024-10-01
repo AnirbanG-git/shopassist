@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       <title>
+            ShopAssist
+        </title>
+        <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+    </head>
+    <body>
+        <div class="outercontainer">
+            <!-- Admin Button -->
+            <div class="admin-button">
+                <button type="button" onclick="location.href='/admin'">Admin</button>
+            </div>
+
+            <div class="center">
+                <h1 id="titlestyle">
+                    ShopAssist
+                </h1>
+            </div>
+
+            <div class="conversationcontainer" id="chatcontainer">
+                <h2>
+                    {% for entry in name %}
+                    <div class="{% if entry.bot %}bot{% else %}user{% endif %}"> 
+                        {% if entry.bot %}
+                        {{ entry.bot }}
+                        {% else %}
+                        {{ entry.user }}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </h2>
+            </div>
+
+            <form action="/chat" method="POST" class="form" onsubmit="showLoading()">
+                <input type="text" name="user_input_message" id="inputtextbox">
+                <input type="submit" value=" " id="submitbutton">
+                <!-- Add a loading indicator -->
+                <span id="loadingMessage" style="display:none;">Fetching response...</span>
+            </form>
+
+            <br/>
+
+            <form action="/end_conv" method="POST" class="form">
+                <button type="submit">End Conversation</button>
+            </form>
+        </div>
+
+        <script>
+            // Scroll to the bottom of the chat container on page load and after a new message is sent
+            function scrollToBottom() {
+                var chatContainer = document.getElementById('chatcontainer');
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            window.onload = scrollToBottom;
+
+            // Show loading message and disable submit button while waiting for a response
+            function showLoading() {
+                document.getElementById('submitbutton').disabled = true; // Disable submit button
+                document.getElementById('loadingMessage').style.display = 'inline'; // Show loading message
+            }
+        </script>
+
+    </body>
+</html>
