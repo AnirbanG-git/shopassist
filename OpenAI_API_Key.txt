@@ -1,1 +1,1 @@
-<please add optnai API key>
+<please add your openAI API key>
